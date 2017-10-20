@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 import "./App.css";
 // import Information from './contenido';
+import {
+  Button,
+  
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  HelpBlock,
+ } from "react-bootstrap";
+
+
 
 class Information extends Component {
   constructor(props) {
@@ -20,87 +30,95 @@ class Information extends Component {
     }) 
   }
   comentPost(e) {
+     let items = null;
+    if (!this.state.nameValue == "" && !this.state.comentValue == "") {
+      items = this.state.todos;
+      items.push({
+        name: this.state.nameValue,
+        coment: this.state.comentValue
+      });
+      
+      this.setState({ 
+        todos: items,
+        comentTrue: true
+       });
+    } else {
+      alert("pon tu nombre y comentario, por favor");
+    }
+ 
 
-    let items = this.state.todos;
-    items.push({
-      name: this.state.nameValue,
-      coment: this.state.comentValue
-    });
 
-    this.setState({
-      todos : items,
-      comentTrue: true
-    });
-    console.log(
-      this.state.todos[0] +
-        this.state.nameValue +
-        " " +
-        this.state.comentValue +
-        " " +
-        this.state.comentTrue
-    );
   }
 
   // onSubmit={(e) => {e.preventDefault(); this.buttonComent(e)}}
   render() {
-    let count = this.state.todos.lenght;
-    const items = this.state.todos.map((person, t) => {
+       function FieldGroup({ id, label, help, ...props }) {
       return (
-        <div key={t}>
-          <div>
-             <b>NOMBRE</b> {this.state.todos[t].name} 
-             <b>COMENT</b>  {this.state.todos[t].coment}
-          </div>{ " "}
-          <br />
-          <button  onClick={() => this.removeTodo(person)} >delete</button>
-          <button>report as abuss</button>
-        </div>
+        <FormGroup controlId={id}>
+          <ControlLabel>{label}</ControlLabel>
+          <FormControl {...props} />
+          {help && <HelpBlock>{help}</HelpBlock>}
+        </FormGroup>
       );
+}
+    const items = this.state.todos.map((person, t) => {
+      return <div key={t}>
+          <hr />
+          <div>
+            <b>NOMBRE</b>
+            <br /> {this.state.todos[t].name} <br />
+            <b>COMENT</b>
+            <br /> {this.state.todos[t].coment} <br />
+          </div> <br />
+          <Button bsStyle="primary" onClick={() => this.removeTodo(person)}>
+            delete
+          </Button>
+          <Button bsStyle="primary">report as abuss</Button>
+          <hr />
+        </div>;
       
     });
 
     let Coment = () => {
       return <div>{items}</div>;
     };
-    return (
-      <div>
+    return <div>
         <form>
           NEW COMMENT<br />
-          <input
-            placeholder="name"
-            onChange={e => (this.state.nameValue = e.target.value)}
-            type="text"
+          <br />
+          < FieldGroup 
+            placeholder = "name"
+            label = "name"
+            onChange = { e => (this.state.nameValue = e.target.value) }
+            type = "text"
           />
           <br />
-          <input
-            placeholder="coment"
-            onChange={e => (this.state.comentValue = e.target.value)}
-            type="text"
-          />
           <br />
-          <button
-            type="button"
-            onClick={e => {
+          < FieldGroup
+            placeholder = "coment"
+            label = "coment"
+            onChange = {e => (this.state.comentValue = e.target.value)  }
+            type = "text"
+            />
+          <br />
+          <br />
+          <Button bsStyle="primary" type="button" onClick={e => {
               this.comentPost(e);
-            }}
-          >
-            {" "}
-            POST COMMENT{" "}
-          </button>
-          <br />
+            }}>
+            {" "}POST COMMENT{" "}
+          </Button>
+          <br />  
         </form>
+        <br />
         <b>COMMENTS</b>
         <br />
         {this.state.todos.length} comments
         <div>
-          {this.state.comentTrue && (
-            <div>
+          {this.state.comentTrue && <div>
               <Coment />
-            </div>
-          )}
+            </div>}
         </div>
-      </div>
-    );
+      </div>;
     // console.log(this.state.na)
   }
 }
